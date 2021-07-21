@@ -10,7 +10,6 @@ var flash = require('connect-flash');
 var passport = require('passport');
 
 require('dotenv').config();
-require('./modules/passport');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -20,6 +19,7 @@ mongoose.connect('mongodb://localhost/AuthGithub', {useNewUrlParser: true, useUn
   console.log(err ? err: "Connected to Databse");
 })
 
+require('./modules/passport');
 
 var app = express();
 
