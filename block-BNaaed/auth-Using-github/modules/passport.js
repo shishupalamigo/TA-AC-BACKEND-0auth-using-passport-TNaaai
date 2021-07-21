@@ -7,14 +7,14 @@ passport.use(new GitHubStrategy({
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: '/auth/github/callback'
 }, (accessToken, refreshToken, profile, done) => {
-    console.log(profile);
+    
     var profileData = {
         name: profile.displayName,
         username: profile.username,
         email: profile._json.email,
         profilePic: profile._json.avatar_url
     }
-    console.log(profileData);
+
     User.findOne({ username: profile.username }, (err, user) => {
         if(err) return done(err);
         if(!user) {
@@ -26,3 +26,13 @@ passport.use(new GitHubStrategy({
         done(null, user);
     })
 }));
+
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+  });
+  
+  passport.deserializeUser((id, done) => {
+    User.findById(id, function (err, user) {
+      done(err, user);
+    });
+  });
