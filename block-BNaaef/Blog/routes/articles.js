@@ -30,7 +30,7 @@ router.get('/:slug', (req, res, next) => {
     var error = req.flash('error')[0];
     Article.findOne({ slug: givenSlug })
                     .populate('comments')
-                    .populate('author', 'name email')
+                    .populate('author', 'name email profilePic')
                     .exec((err, article) => {
         if(err) return next(err);
         Comment.find({ articleId: article.id})
@@ -72,7 +72,7 @@ router.get('/:slug/edit', (req, res, next) => {
     Article.findOne({ slug: givenSlug }, (err, article) =>  {
         if(err) return next(err);
         if(currentUserId !== article.author.toString()) {
-            req.flash('error', 'You Are Not Authorised to Edit this Article!');
+            req.flash('error', 'Only the author is allowed to Edit this Article!');
             res.redirect('/articles/' + givenSlug);
         } else {
             Article.findOne({ slug: givenSlug }, (err, article) => {
@@ -99,7 +99,7 @@ router.get('/:slug/delete', (req, res, next) => {
     Article.findOne({ slug: givenSlug }, (err, article) => {
         if(err) return next(err);
         if(currentUserId !== article.author.toString()) {
-            req.flash('error', 'You Are Not Authorised to Delete this Article!');
+            req.flash('error', 'Only the Author can delete the Article!');
             res.redirect('/articles/' + givenSlug);
         } else {
             Article.findOneAndDelete({ slug: givenSlug }, (err, deletedArticle) => {
