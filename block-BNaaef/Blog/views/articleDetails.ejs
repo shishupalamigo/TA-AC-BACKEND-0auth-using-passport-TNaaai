@@ -44,7 +44,6 @@
         <% article.comments.forEach(comment => { %>
             <div class="p-5 border-2 mb-3">
                 <p class="text-grey-500"><%= comment.content %></p>
-                <p>Author: <%= comment.author.fullName %></p>
                 <p><span class="text-xs m-3 text-red-500">Likes: <%= comment.likes %></span></p>
                 <a href="/comments/<%= comment.id %>/like">
                     <button class="text-xs text-white bg-blue-500 px-1 rounded">Like 💖</button>

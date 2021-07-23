@@ -10,6 +10,7 @@ module.exports = {
         }
          else {
             req.flash('error', 'You must be logged-In to perform this action');
+            req.session.returnTo = req.originalUrl; 
             res.redirect('/users/login');
         }
     },
@@ -18,7 +19,7 @@ module.exports = {
         if(req.session.userId) {
             var userId = req.session && req.session.userId;
 
-            User.findById(userId, "name email", (err, user) => {
+            User.findById(userId, "name email profilePic", (err, user) => {
                 if(err) return next(err);
                 req.user = user;
                 res.locals.user = user;
@@ -26,7 +27,7 @@ module.exports = {
             })
         } else if(req.session.passport) {
             let userId = req.session && req.session.passport.user
-            User.findById(userId, "name email", (err, user) => {
+            User.findById(userId, "name email profilePic", (err, user) => {
                 if(err) return next(err);
                 req.user = user;
                 res.locals.user = user;

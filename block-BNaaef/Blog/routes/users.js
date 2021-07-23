@@ -1,7 +1,25 @@
 var express = require('express');
 var User = require('../models/user');
+var multer = require('multer');
+var path = require('path');
 
 var router = express.Router();
+
+
+var uploadPath = path.join(__dirname, '../', 'public/uploads');
+// Strorage for Uploaded Files
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    cb(null,  Date.now() + '-' + file.originalname );
+  }
+})
+ 
+var upload = multer({ storage: storage })
+
 
 /* GET users listing. */
 router.get('/', (req, res, next) => {
@@ -11,7 +29,6 @@ router.get('/', (req, res, next) => {
     });
 });
 router.get('/dashboard', (req, res, next) => {
-  console.log(req.session, "Dashboard Request");
   let userId = req.session.userId || req.session.passport.user;
   User.findOne({_id: userId }, (err, user) => {
     if(err) return next(err);
@@ -24,8 +41,8 @@ router.get('/register', function(req, res, next) {
     res.render('registration', { error });
 });
 
-router.post('/register', (req, res, next) => {
-
+router.post('/register', upload.single('profilePic') ,(req, res, next) => {
+  req.body.profilePic = req.file.filename;
   User.create(req.body, (err, user) => {
     if(err) {
       if(err.name === 'MongoError') {
@@ -40,6 +57,7 @@ router.post('/register', (req, res, next) => {
     res.redirect('/users/login');
   });
 });
+
 // Login
 router.get('/login', (req,res, next) =>  {
   var error = req.flash('error')[0];
@@ -66,7 +84,9 @@ router.post('/login', (req, res, next) => {
       }
       req.session.userId = user.id;
       console.log(typeof(user.id), typeof(user._id) )
-      res.redirect('/users/dashboard');
+      res.redirect(req.session.returnTo || '/users/dashboard');
+      delete req.session.returnTo;
+      // res.redirect('/users/dashboard');
     });
   });
 });
