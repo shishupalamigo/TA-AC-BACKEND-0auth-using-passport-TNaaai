@@ -1,0 +1,23 @@
+<% include partials/header %>
+
+    <main class="m-20 min-screen-h flex justify-center items-center" >
+        <section class="flex flex-col items-center">
+            <h1 class="text-center text-2xl text-blue-600 mb-10" >Welcome <%= user.name %></h1>
+            <div class="flex justify-center w-2/4">
+                <% if(user.profilePic.includes('http')) { %>
+                    <img src="<%= user.profilePic %>" alt="Profile Pic" class="w-full rounded-full">
+               <% } else { %>
+                    <img src="/uploads/<%= user.profilePic %>" alt="Profile Pic" class="w-full rounded-full">
+               <% } %>
+            </div>
+        </section>
+        <section>
+
+        </section>
+    </main>
+    <section class="flex justify-center mt-5 mb-20">
+        <a href="/articles" class="px-3 py-2 text-white font-bold rounded bg-green-600 hover-bg-blue-900 mr-5" >
+            View All Articles
+        </a>
+    </section>
+<% include partials/footer %>
